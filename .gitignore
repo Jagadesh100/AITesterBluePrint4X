@@ -2,3 +2,5 @@
 /chapter_02_Prompt_Engineering/Documents/PRD_VWO.md
 /chapter_02_Prompt_Engineering/Tasks/Playwright Automation Framework Generator/RICE_POT_PlaywrightAdvanceFramework/package.json
 /chapter_02_Prompt_Engineering/Tasks/Playwright Automation Framework Generator/RICE_POT_PlaywrightAdvanceFramework/package-lock.json
+.env
+.env.example
