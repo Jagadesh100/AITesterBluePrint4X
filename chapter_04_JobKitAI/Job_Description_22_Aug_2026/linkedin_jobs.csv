@@ -1,0 +1,62 @@
+﻿Company,Job Title,Description
+TEK Systems,Senior Quality Assurance Engineer,"EXPERIENCE & KEY SKILLS:
+1. Understanding and experience of software test methodologies & types of test automation frameworks
+2. AGILE scrum methodology experience & Safe agile is mandatory.
+3. Hands-on experience on manual testing & automating web-based or PC based software
+4. Experience in coaching other testers.
+5. Understanding and experience of various aspects of software and system testing, Functional, non-functional, integration, system, performance, robustness, compatibility, regression, customer mode testing.
+6. CANDIDATES WITH WORKING KNOWLEDGE & HANDS ON ANY AUTOMATION TOOL LIKE TEST COMPLETE/PYTHON/SELENIUM WITH ROBOT FRAMEWORK ARE ESSENTIAL 
+
+7. WORKING KNOWLEDGE ON JAVASCRIPT, TYPE SCRIPT, PYTHON, SELENIUM, HTML, CCS 
+
+8. DESIGN BUILD AND MAINTAIN TEST AUTOMATION FRAMEWORKS USING TYPESCRIPT/JAVASCRIPT WITH PLAYWRIGHT – MANDATORY 
+
+9. HANDS-ON TEST AUTOMATION EXPERIENCE WITH JAVASCRIPT AND TYPESCRIPT - MANDATORY 
+
+10. HANDS-ON EXPERIENCE WITH PLAYWRIGHT FOR BOTH UI AND API AUTOMATION - MANDATORY 
+
+11. Develop and maintain automated regression and smoke suites; keep them stable, reliable, and low-noise
+12. Convert high-value manual regression cases into automated coverage
+13. Integrate automated suites into CI/CD pipelines and report results back to the team
+14. Automate API tests using Playwright's built-in API testing capabilities (APIRequestContext / request fixture) in TypeScript.
+15. Perform exploratory and manual API testing using Postman or equivalent tools
+16. Test REST services and SOAP services where applicable.
+17. Validate applications against JSON/XML API contracts, including schema validation, error handling, authentication, and negative scenarios.
+18. Combine UI and API layers in end-to-end scenarios using API calls for test setup, data seeding, and state verification.
+19. Own quality assurance for assigned applications and features across frontend and backend layers General
+20. Identify, log, prioritise, and track defects to closure reproduce issues and partner with developers on root cause.
+21. Contribute to test strategy, test plans, estimation, and quality gates within the SDLC.
+22. Participate fully in Agile/Scrum ceremonies sprint planning, standups, reviews, and retrospectives.
+23. Ensure compliance with web, cloud, browser, and API standards.
+24. CANDIDATES WITH THE KNOWLEDGE OF DIFFERENT PROTOCOLS, LIKE MODBUS, HTTP, SNMP, IEC61850 WORKING KNOWLEDGE ON WIRESHARK FRAME TRACE, MODBUS LOGS ETC WOULD BE PREFERRED. 
+
+25. KNOWLEDGE ON ELECTRICAL DISTRIBUTION DEVICES ARE PREFERABLE."
+Infosys,QA Engineer,"Strong understanding of STLC, SDLC, and Agile methodologies
+
+ Hands-on experience in Automation, Functional and Regression testing
+ Basic programming knowledge on Java/Python/Typescript
+ Familiarity with Automation Tools (Selenium/Playwright / TestNG) and Visual Studio for developing and debugging Agents/Tools/MCP Servers
+ Agentic AI concepts and Agentic Playground environments
+ CI/CD and DevOps exposure
+ Version control tools (Git)
+ JIRA for test management Perform UI, regression, integration and automated testing
+ Convert requirements into clear test cases, scenarios, and test data
+ Execute manual and automated tests to ensure quality coverage across releases
+ Identify, log, track, and validate defects with proper severity and priority
+ Collaborate with development and product teams for defect triage and resolution
+ Support test planning, estimation, and requirement analysis activities
+ Contribute to test automation frameworks and CI/CD integration.
+ Use Visual Studio Code (VS Code) to write test scripts, debug automation code, and manage Git/extensions
+ Work with or explore Agentic AI tools and Agentic Playground for AI-assisted testing, prompt-based validation, test generation, and productivity improvement
+ Participate in Agile ceremonies (stand-ups, sprint planning, retrospectives)
+ Ensure adherence to quality processes and best practices Strong ownership and accountability
+ Proactive and solution-oriented approach
+ Effective stakeholder communication
+ Willingness to learn emerging technologies (AI, automation)
+ Positive and adaptable team player Why Join Us
+ Work on AI-enabled testing and engineering practices
+ Gain exposure to Agentic AI and modern developer ecosystems
+ Collaborate with global teams and enterprise clients
+ Be part of a high-performance, innovation-driven environment
+
+Unlock hiring insights on Infosys"

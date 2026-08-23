@@ -4,3 +4,8 @@
 /chapter_02_Prompt_Engineering/Tasks/Playwright Automation Framework Generator/RICE_POT_PlaywrightAdvanceFramework/package-lock.json
 .env
 .env.example
+/chapter_04_JobKitAI/resume-helper/resume-tailor/scripts/node_modules
+/chapter_04_JobKitAI/resume-helper/resume-tailor/scripts/package-lock.json
+/chapter_04_JobKitAI/resume-helper/resume-tailor/scripts/package.json
+/chapter_04_JobKitAI/Resume
+/chapter_04_JobKitAI/Output
