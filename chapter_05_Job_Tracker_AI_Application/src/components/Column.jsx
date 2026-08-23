@@ -46,14 +46,17 @@ export default function Column({ status, label, jobs, activeAllowed = [], active
           {jobs.length}
         </span>
       </div>
-      {canAdd && (
-        <button
-          onClick={onAdd}
-          className="mx-3 mb-2 rounded-lg border border-dashed border-slate-300 py-1.5 text-xs font-medium text-slate-400 transition hover:border-blue-400 hover:bg-blue-50 hover:text-blue-600 dark:border-slate-700 dark:text-slate-500 dark:hover:border-blue-500 dark:hover:bg-blue-950/40 dark:hover:text-blue-400"
-        >
-          + Add
-        </button>
-      )}
+      {/* Fixed-height slot so every column is the same size; the button only shows where adding is allowed */}
+      <div className="mx-3 mb-2 h-8">
+        {canAdd ? (
+          <button
+            onClick={onAdd}
+            className="h-full w-full rounded-lg border border-dashed border-slate-300 text-xs font-medium text-slate-400 transition hover:border-blue-400 hover:bg-blue-50 hover:text-blue-600 dark:border-slate-700 dark:text-slate-500 dark:hover:border-blue-500 dark:hover:bg-blue-950/40 dark:hover:text-blue-400"
+          >
+            + Add
+          </button>
+        ) : null}
+      </div>
       <div className="min-h-0 flex-1 space-y-2 overflow-y-auto overflow-x-hidden px-2 pb-2">
         {jobs.map((job) => (
           <JobCard
