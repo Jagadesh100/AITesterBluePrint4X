@@ -9,4 +9,5 @@
 /chapter_04_JobKitAI/resume-helper/resume-tailor/scripts/package.json
 /chapter_04_JobKitAI/Resume
 /chapter_04_JobKitAI/Output
-chapter_05_Job_Tracker_AI_Application/node_modules
+/chapter_05_Job_Tracker_AI_Application/node_modules
+/chapter_05_Job_Tracker_AI_Application/dist

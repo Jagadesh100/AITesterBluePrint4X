@@ -71,7 +71,7 @@ export default function Board({ jobs, filter, onAddJob, onEditJob, onArchiveJob,
       onDragEnd={handleDragEnd}
       onDragCancel={handleDragCancel}
     >
-      <div className="flex gap-3 overflow-x-auto pb-4">
+      <div className="flex gap-3 pb-4">
         {STATUSES.map((s) => (
           <Column
             key={s.key}
