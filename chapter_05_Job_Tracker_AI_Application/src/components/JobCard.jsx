@@ -1,10 +1,13 @@
 import { useDraggable } from '@dnd-kit/core'
 import TagChip from './TagChip'
-import { STATUS_ACCENT, daysSince, isOverdue, STATUSES } from '../utils/helpers'
+import { STATUS_ACCENT, daysSince, isOverdue, STATUSES, ALLOWED_TRANSITIONS } from '../utils/helpers'
 
 export default function JobCard({ job, onEdit, onArchive, onDelete, onAddRound }) {
+  // Locked statuses (empty transition list) cannot be dragged.
+  const locked = !(ALLOWED_TRANSITIONS[job.status] || []).length
   const { attributes, listeners, setNodeRef, transform, isDragging } = useDraggable({
     id: job.id,
+    disabled: locked,
   })
 
   const style = transform
@@ -24,13 +27,15 @@ export default function JobCard({ job, onEdit, onArchive, onDelete, onAddRound }
       style={style}
       {...attributes}
       {...listeners}
-      className={`group relative cursor-grab rounded-lg border-l-4 ${accent} bg-white p-3 shadow-sm ring-1 ring-black/5 transition hover:shadow-md active:cursor-grabbing dark:bg-slate-800 dark:ring-white/10`}
+      className={`group relative ${locked ? 'cursor-default' : 'cursor-grab'} rounded-xl border-l-4 ${accent} border-y border-r border-slate-300 p-3 shadow-sm transition hover:-translate-y-0.5 hover:shadow-md active:cursor-grabbing dark:border-y-slate-700/60 dark:border-r-slate-700/60 dark:shadow-black/20`}
     >
       {overdue && (
         <span
-          className="absolute right-2 top-2 h-2.5 w-2.5 rounded-full bg-red-500"
+          className="absolute right-2 top-2 flex h-4 w-4 items-center justify-center rounded-full bg-red-500 text-[9px] font-bold text-white"
           title="Needs follow-up"
-        />
+        >
+          !
+        </span>
       )}
       <div className="flex items-start justify-between gap-2">
         <div className="min-w-0">
@@ -45,7 +50,7 @@ export default function JobCard({ job, onEdit, onArchive, onDelete, onAddRound }
             target="_blank"
             rel="noreferrer"
             onClick={(e) => e.stopPropagation()}
-            className="shrink-0 text-slate-400 hover:text-blue-600 dark:hover:text-blue-400"
+            className="shrink-0 text-slate-400 transition hover:text-blue-600 dark:text-slate-500 dark:hover:text-blue-400"
             title="View job posting"
           >
             <svg className="h-4 w-4" fill="currentColor" viewBox="0 0 24 24">
@@ -55,9 +60,9 @@ export default function JobCard({ job, onEdit, onArchive, onDelete, onAddRound }
         )}
       </div>
 
-      <div className="mt-2 flex flex-wrap items-center gap-1.5">
+      <div className="mt-2 flex flex-wrap items-center gap-1.5 overflow-hidden">
         {job.resume && (
-          <span className="rounded bg-slate-100 px-1.5 py-0.5 text-[10px] font-medium text-slate-600 dark:bg-slate-700 dark:text-slate-300">
+          <span className="rounded-md bg-slate-100 px-1.5 py-0.5 text-[10px] font-semibold text-slate-600 dark:bg-slate-700/70 dark:text-slate-300">
             {job.resume}
           </span>
         )}
@@ -66,7 +71,7 @@ export default function JobCard({ job, onEdit, onArchive, onDelete, onAddRound }
         ))}
         {roundCount > 0 && (
           <span
-            className="rounded bg-slate-100 px-1.5 py-0.5 text-[10px] font-medium text-slate-600 dark:bg-slate-700 dark:text-slate-300"
+            className="rounded-md bg-slate-100 px-1.5 py-0.5 text-[10px] font-semibold text-slate-600 dark:bg-slate-700/70 dark:text-slate-300"
             title="Interview rounds"
           >
             {roundsDone}/{roundCount} rounds
@@ -74,47 +79,66 @@ export default function JobCard({ job, onEdit, onArchive, onDelete, onAddRound }
         )}
       </div>
 
-      <div className="mt-2 flex items-center justify-between text-[11px] text-slate-400 dark:text-slate-500">
-        <span>{days !== null ? `${days}d` : statusLabel}</span>
-        {overdue && <span className="font-medium text-red-500">Follow up</span>}
+      <div className="mt-2 flex items-center justify-between gap-2">
+        <span className="truncate rounded-md bg-slate-200/60 px-1.5 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-slate-600 dark:bg-slate-700/60 dark:text-slate-300">
+          {statusLabel}
+        </span>
+        <span className="shrink-0 text-[11px] text-slate-400 dark:text-slate-500">
+          {days !== null ? `${days}d` : ''}
+        </span>
+        {overdue && <span className="shrink-0 text-[11px] font-semibold text-red-500">Follow up</span>}
       </div>
 
-      <div className="mt-2 flex gap-1 opacity-0 transition group-hover:opacity-100">
+      <div className="mt-2 grid grid-cols-4 gap-0.5 opacity-0 transition group-hover:opacity-100">
         <button
           onClick={(e) => {
             e.stopPropagation()
             onEdit(job)
           }}
-          className="rounded px-1.5 py-0.5 text-[11px] text-slate-500 hover:bg-slate-100 hover:text-slate-800 dark:text-slate-400 dark:hover:bg-slate-700"
+          title="Edit"
+          className="flex items-center justify-center rounded-md px-1 py-1 text-slate-500 hover:bg-slate-100 hover:text-slate-800 dark:text-slate-400 dark:hover:bg-slate-700 dark:hover:text-slate-100"
         >
-          Edit
+          <svg className="h-3.5 w-3.5" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+          </svg>
         </button>
-        <button
-          onClick={(e) => {
-            e.stopPropagation()
-            onAddRound(job)
-          }}
-          className="rounded px-1.5 py-0.5 text-[11px] text-slate-500 hover:bg-slate-100 hover:text-slate-800 dark:text-slate-400 dark:hover:bg-slate-700"
-        >
-          + Round
-        </button>
+        {job.status === 'interview' && (
+          <button
+            onClick={(e) => {
+              e.stopPropagation()
+              onAddRound(job)
+            }}
+            title="Add interview round"
+            className="flex items-center justify-center rounded-md px-1 py-1 text-purple-500 hover:bg-purple-50 hover:text-purple-700 dark:text-purple-400 dark:hover:bg-purple-900/30 dark:hover:text-purple-300"
+          >
+            <svg className="h-3.5 w-3.5" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
+            </svg>
+          </button>
+        )}
         <button
           onClick={(e) => {
             e.stopPropagation()
             onArchive(job)
           }}
-          className="rounded px-1.5 py-0.5 text-[11px] text-slate-500 hover:bg-slate-100 hover:text-slate-800 dark:text-slate-400 dark:hover:bg-slate-700"
+          title="Archive"
+          className="flex items-center justify-center rounded-md px-1 py-1 text-slate-500 hover:bg-slate-100 hover:text-slate-800 dark:text-slate-400 dark:hover:bg-slate-700 dark:hover:text-slate-100"
         >
-          Archive
+          <svg className="h-3.5 w-3.5" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" d="M5 8h14M5 8a2 2 0 110-4h14a2 2 0 110 4M7 8v10a2 2 0 002 2h6a2 2 0 002-2V8m-9 4h6" />
+          </svg>
         </button>
         <button
           onClick={(e) => {
             e.stopPropagation()
             onDelete(job)
           }}
-          className="rounded px-1.5 py-0.5 text-[11px] text-red-500 hover:bg-red-50 dark:hover:bg-red-900/30"
+          title="Delete"
+          className="flex items-center justify-center rounded-md px-1 py-1 text-red-500 hover:bg-red-50 dark:text-red-400 dark:hover:bg-red-900/30"
         >
-          Delete
+          <svg className="h-3.5 w-3.5" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+          </svg>
         </button>
       </div>
       {isDragging && <div className="sr-only">Dragging</div>}

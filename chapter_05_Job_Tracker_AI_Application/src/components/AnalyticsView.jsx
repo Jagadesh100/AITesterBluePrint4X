@@ -33,16 +33,16 @@ export default function AnalyticsView({ jobs }) {
     const appliedThisWeek = all.filter((j) => inRange(j.dateApplied, weekAgo)).length
     const appliedThisMonth = all.filter((j) => inRange(j.dateApplied, monthAgo)).length
 
-    const appliedCount = all.filter((j) => ['applied', 'followup', 'interview', 'offer'].includes(j.status)).length
+    const appliedCount = all.filter((j) => ['applied', 'followup', 'interview', 'offer', 'offerRejected'].includes(j.status)).length
     const reachedInterviewOrOffer = all.filter((j) => ['interview', 'offer'].includes(j.status)).length
-    const rejectedCount = all.filter((j) => j.status === 'rejected').length
+    const rejectedCount = all.filter((j) => ['rejected', 'offerRejected'].includes(j.status)).length
     const activeCount = active.length
 
     const responseRate = appliedCount > 0 ? Math.round((reachedInterviewOrOffer / appliedCount) * 100) : 0
     const rejectionRate = appliedCount > 0 ? Math.round((rejectedCount / appliedCount) * 100) : 0
 
     // Approximate avg days from dateApplied to current status (no status-change history tracked)
-    const progressed = all.filter((j) => j.dateApplied && ['interview', 'offer', 'rejected'].includes(j.status))
+    const progressed = all.filter((j) => j.dateApplied && ['interview', 'offer', 'offerRejected', 'rejected'].includes(j.status))
     const avgDays =
       progressed.length > 0
         ? Math.round(progressed.reduce((sum, j) => sum + (daysSince(j.dateApplied) || 0), 0) / progressed.length)
@@ -79,7 +79,7 @@ export default function AnalyticsView({ jobs }) {
           value={stats.avgDays === null ? '—' : `${stats.avgDays}d`}
           sub="interview / offer / rejected"
         />
-        <StatCard label="Rejections" value={stats.rejectedCount} />
+        <StatCard label="Rejections" value={stats.rejectedCount} sub="company + self-declined" />
       </div>
       <div className="rounded-xl bg-white p-4 shadow-sm ring-1 ring-black/5 dark:bg-slate-800 dark:ring-white/10">
         <p className="mb-2 text-xs font-medium uppercase tracking-wide text-slate-500 dark:text-slate-400">

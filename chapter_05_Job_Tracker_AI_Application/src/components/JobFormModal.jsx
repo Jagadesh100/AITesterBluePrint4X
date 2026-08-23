@@ -85,24 +85,29 @@ export default function JobFormModal({ job, defaultStatus, allJobs, onSave, onCl
   }
 
   function addRound() {
-    set({
+    setForm((f) => ({
+      ...f,
       interviewRounds: [
-        ...(form.interviewRounds || []),
+        ...(f.interviewRounds || []),
         { id: uuid(), stage: '', date: '', notes: '', done: false },
       ],
-    })
+    }))
   }
 
   function updateRound(id, patch) {
-    set({
-      interviewRounds: (form.interviewRounds || []).map((r) =>
+    setForm((f) => ({
+      ...f,
+      interviewRounds: (f.interviewRounds || []).map((r) =>
         r.id === id ? { ...r, ...patch } : r
       ),
-    })
+    }))
   }
 
   function removeRound(id) {
-    set({ interviewRounds: (form.interviewRounds || []).filter((r) => r.id !== id) })
+    setForm((f) => ({
+      ...f,
+      interviewRounds: (f.interviewRounds || []).filter((r) => r.id !== id),
+    }))
   }
 
   function handleSubmit(e) {
@@ -279,59 +284,61 @@ export default function JobFormModal({ job, defaultStatus, allJobs, onSave, onCl
             </div>
           </Section>
 
-          <Section title="Interview rounds">
-            <div className="space-y-2">
-              {(form.interviewRounds || []).map((round) => (
-                <div key={round.id} className="grid grid-cols-1 gap-2 rounded-lg border border-slate-200 p-3 sm:grid-cols-[1fr_auto_1.5fr_auto] dark:border-slate-700">
-                  <input
-                    className={inputCls}
-                    value={round.stage}
-                    onChange={(e) => updateRound(round.id, { stage: e.target.value })}
-                    placeholder="Stage (e.g. Phone Screen)"
-                  />
-                  <input
-                    type="date"
-                    className={inputCls}
-                    value={round.date || ''}
-                    onChange={(e) => updateRound(round.id, { date: e.target.value })}
-                  />
-                  <input
-                    className={inputCls}
-                    value={round.notes || ''}
-                    onChange={(e) => updateRound(round.id, { notes: e.target.value })}
-                    placeholder="Notes"
-                  />
-                  <div className="flex items-center gap-2">
-                    <label className="flex items-center gap-1 text-xs text-slate-500 dark:text-slate-400">
-                      <input
-                        type="checkbox"
-                        checked={Boolean(round.done)}
-                        onChange={(e) => updateRound(round.id, { done: e.target.checked })}
-                      />
-                      Done
-                    </label>
-                    <button
-                      type="button"
-                      onClick={() => removeRound(round.id)}
-                      className="rounded p-1 text-red-500 hover:bg-red-50 dark:hover:bg-red-900/30"
-                      aria-label="Remove round"
-                    >
-                      <svg className="h-4 w-4" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
-                      </svg>
-                    </button>
+          {form.status === 'interview' && (
+            <Section title="Interview rounds">
+              <div className="space-y-2">
+                {(form.interviewRounds || []).map((round) => (
+                  <div key={round.id} className="grid grid-cols-1 gap-2 rounded-lg border border-slate-200 p-3 sm:grid-cols-[1fr_auto_1.5fr_auto] dark:border-slate-700">
+                    <input
+                      className={inputCls}
+                      value={round.stage}
+                      onChange={(e) => updateRound(round.id, { stage: e.target.value })}
+                      placeholder="Stage (e.g. Phone Screen)"
+                    />
+                    <input
+                      type="date"
+                      className={inputCls}
+                      value={round.date || ''}
+                      onChange={(e) => updateRound(round.id, { date: e.target.value })}
+                    />
+                    <input
+                      className={inputCls}
+                      value={round.notes || ''}
+                      onChange={(e) => updateRound(round.id, { notes: e.target.value })}
+                      placeholder="Notes"
+                    />
+                    <div className="flex items-center gap-2">
+                      <label className="flex items-center gap-1 text-xs text-slate-500 dark:text-slate-400">
+                        <input
+                          type="checkbox"
+                          checked={Boolean(round.done)}
+                          onChange={(e) => updateRound(round.id, { done: e.target.checked })}
+                        />
+                        Done
+                      </label>
+                      <button
+                        type="button"
+                        onClick={() => removeRound(round.id)}
+                        className="rounded p-1 text-red-500 hover:bg-red-50 dark:hover:bg-red-900/30"
+                        aria-label="Remove round"
+                      >
+                        <svg className="h-4 w-4" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                        </svg>
+                      </button>
+                    </div>
                   </div>
-                </div>
-              ))}
-              <button
-                type="button"
-                onClick={addRound}
-                className="rounded-lg border border-dashed border-slate-300 px-3 py-1.5 text-xs text-slate-500 hover:border-slate-400 hover:text-slate-700 dark:border-slate-600 dark:hover:text-slate-300"
-              >
-                + Add round
-              </button>
-            </div>
-          </Section>
+                ))}
+                <button
+                  type="button"
+                  onClick={addRound}
+                  className="rounded-lg border border-dashed border-slate-300 px-3 py-1.5 text-xs text-slate-500 hover:border-slate-400 hover:text-slate-700 dark:border-slate-600 dark:hover:text-slate-300"
+                >
+                  + Add round
+                </button>
+              </div>
+            </Section>
+          )}
 
           <Section title="Job description snapshot & notes">
             <Field label="Job description (pasted)">

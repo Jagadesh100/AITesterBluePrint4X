@@ -2,14 +2,23 @@ import { DndContext, DragOverlay, PointerSensor, useSensor, useSensors, closestC
 import { useMemo, useState } from 'react'
 import Column from './Column'
 import JobCard from './JobCard'
-import { STATUSES } from '../utils/helpers'
+import { STATUSES, ALLOWED_TRANSITIONS } from '../utils/helpers'
 
 export default function Board({ jobs, filter, onAddJob, onEditJob, onArchiveJob, onDeleteJob, onAddRound }) {
   const [activeId, setActiveId] = useState(null)
 
   const sensors = useSensors(
-    useSensor(PointerSensor, { activationConstraint: { distance: 5 } })
+    useSensor(PointerSensor, {
+      activationConstraint: {
+        distance: 5,
+        // Cards whose status has no allowed transitions are locked — never start a drag.
+        delay: 0,
+      },
+    })
   )
+
+  const activeJob = jobs.find((j) => j.id === activeId)
+  const activeAllowed = activeJob ? ALLOWED_TRANSITIONS[activeJob.status] || [] : []
 
   const visibleJobs = useMemo(() => {
     const q = (filter.query || '').trim().toLowerCase()
@@ -41,9 +50,13 @@ export default function Board({ jobs, filter, onAddJob, onEditJob, onArchiveJob,
     return map
   }, [visibleJobs])
 
-  const activeJob = jobs.find((j) => j.id === activeId)
-
   function handleDragStart(event) {
+    const job = jobs.find((j) => j.id === event.active.id)
+    if (!job) return
+    // Locked statuses (empty transition list) cannot be dragged at all.
+    if (!(ALLOWED_TRANSITIONS[job.status] || []).length) {
+      return
+    }
     setActiveId(event.active.id)
   }
 
@@ -54,7 +67,8 @@ export default function Board({ jobs, filter, onAddJob, onEditJob, onArchiveJob,
     const job = jobs.find((j) => j.id === active.id)
     if (!job) return
     const targetStatus = over.id
-    if (job.status !== targetStatus) {
+    // Only apply the move if the transition is explicitly allowed.
+    if (targetStatus !== job.status && (ALLOWED_TRANSITIONS[job.status] || []).includes(targetStatus)) {
       onEditJob({ ...job, status: targetStatus })
     }
   }
@@ -78,6 +92,8 @@ export default function Board({ jobs, filter, onAddJob, onEditJob, onArchiveJob,
             status={s.key}
             label={s.label}
             jobs={grouped[s.key] || []}
+            activeAllowed={activeAllowed}
+            activeFrom={activeJob ? activeJob.status : null}
             onAdd={() => onAddJob(s.key)}
             onEdit={onEditJob}
             onArchive={onArchiveJob}
