@@ -1,6 +1,6 @@
 # AITesterBluePrint4X
 
-A structured QA blueprint repository for AI-assisted software testing. It contains prompt engineering frameworks, reusable prompt templates, a working Playwright + TypeScript automation framework, a Jira-driven LLM test case generator app, and an AI-powered resume tailoring toolkit — all centered around the **RICE POT** prompting methodology.
+A structured QA blueprint repository for AI-assisted software testing. It contains prompt engineering frameworks, reusable prompt templates, a working Playwright + TypeScript automation framework, a Jira-driven LLM test case generator app, an AI-powered resume tailoring toolkit, and a local-first job application tracker — all centered around the **RICE POT** prompting methodology.
 
 ## Table of Contents
 
@@ -11,6 +11,7 @@ A structured QA blueprint repository for AI-assisted software testing. It contai
 - [Chapter 2: Prompt Engineering](#chapter-2-prompt-engineering)
 - [Chapter 3: Local LLM Test Case Generator](#chapter-3-local-llm-test-case-generator)
 - [Chapter 4: JobKit AI — Resume Tailor](#chapter-4-jobkit-ai--resume-tailor)
+- [Chapter 5: Job Tracker AI](#chapter-5-job-tracker-ai)
 - [Prompt Templates Library](#prompt-templates-library)
 - [Tasks & Deliverables](#tasks--deliverables)
 - [Playwright Framework](#playwright-framework)
@@ -24,6 +25,7 @@ This repository is organized as a progressive blueprint for QA engineers working
 - **Chapter 2 — Prompt Engineering:** The RICE POT prompt framework (`Role`, `Instructions`, `Context`, `Example`, `Parameters`, `Output`, `Tone`), a library of reusable prompt templates, and generated task deliverables (test plan, BDD test cases, and a runnable Playwright framework).
 - **Chapter 3 — Local LLM Test Case Generator:** A Streamlit app that turns a Jira ticket into enterprise-grade test cases, using a local LLM (LM Studio) with a Groq cloud fallback.
 - **Chapter 4 — JobKit AI — Resume Tailor:** An AI skill that tailors an existing resume to a job description and renders an ATS-safe, editable `.docx`, with every change highlighted for approval.
+- **Chapter 5 — Job Tracker AI:** A local-first React + Vite job application tracker with a drag-and-drop Kanban board, IndexedDB persistence, interview-round tracking, and analytics.
 
 ## Key Features
 
@@ -34,6 +36,7 @@ This repository is organized as a progressive blueprint for QA engineers working
 - **Traceable Deliverables** — test plan and BDD test cases derived strictly from the VWO login PRD.
 - **Jira → Test Case Pipeline** — a Streamlit app that merges a Jira ticket into a RICE POT template and generates test cases via a local or hosted LLM.
 - **Resume Tailoring** — an AI skill that rewrites a resume against a JD, highlighting every change and refusing to invent facts.
+- **Job Application Tracker** — a local-first Kanban board (React + Vite + IndexedDB) with restricted drag-and-drop, interview-round tracking, and follow-up reminders.
 
 ## Repository Structure
 
@@ -90,6 +93,35 @@ AITesterBluePrint4X/
     │           ├── build_resume.js        # Renders spec JSON → .docx
     │           └── package.json
     └── output/                            # Generated tailored resumes (.docx + spec JSON)
+└── chapter_05_Job_Tracker_AI_Application/
+    ├── Skill.md                           # Full product spec for the tracker app
+    ├── index.html
+    ├── package.json
+    ├── tailwind.config.js
+    ├── postcss.config.js
+    ├── vite.config.js
+    └── src/
+        ├── main.jsx                       # React entry point
+        ├── App.jsx                        # App shell: header, tabs, views
+        ├── index.css                      # Tailwind + theme scrollbar styling
+        ├── db/
+        │   └── db.js                      # idb IndexedDB open + CRUD helpers
+        ├── hooks/
+        │   └── useJobs.js                 # IndexedDB state hook
+        ├── utils/
+        │   └── helpers.js                 # Statuses, accents, transitions, tags
+        └── components/
+            ├── Board.jsx                  # DnD context + column grid
+            ├── Column.jsx                 # Kanban column (status dot, count, + Add)
+            ├── JobCard.jsx                # Draggable job card
+            ├── JobFormModal.jsx           # Add/edit modal (rounds, contact, tags)
+            ├── SearchBar.jsx              # Search + tag filter
+            ├── TagChip.jsx                # Colored tag chip
+            ├── ThemeToggle.jsx            # Dark/light toggle
+            ├── ArchiveView.jsx            # Archived cards list
+            ├── AnalyticsView.jsx          # Stats view
+            ├── CalendarView.jsx           # Follow-up/interview calendar
+            └── ImportExport.jsx           # JSON export/import
 ```
 
 ## Chapter 1: LLM Basics
@@ -188,6 +220,72 @@ Running the build with `--clean` strips highlights, drops `note` blocks, and **r
 - `JAGADESH_THIRUMAL_QA_Automation_Engineer.docx` — base tailored resume
 - `JAGADESH_THIRUMAL_QA_Automation_Engineer_TEKSystems.docx` — tailored to TEKSystems JD
 - `JAGADESH_THIRUMAL_QA_Engineer_Infosys.docx` — tailored to Infosys JD
+
+## Chapter 5: Job Tracker AI
+
+`chapter_05_Job_Tracker_AI_Application/` is a **local-first job application tracker** — a single-page React + Vite app with a drag-and-drop Kanban board. All data lives in the browser via **IndexedDB** (the `idb` wrapper); there is no backend, auth, or external API, so it works fully offline. The full product spec lives in `Skill.md`.
+
+### Kanban board
+
+Seven equal-width columns (no horizontal scrolling — all fit the viewport):
+
+1. **Wishlist** — saved jobs not yet applied to
+2. **Applied** — application submitted
+3. **Follow-up** — followed up with recruiter/referral
+4. **Interview** — in interview rounds
+5. **Offer Accepted** — offer received and accepted
+6. **Offer Declined** — offer received but declined by the candidate
+7. **Rejected** — got a rejection from the company
+
+Each card shows the company, role, resume tag, tag chips, days since applied, a clickable LinkedIn link, a status label pill, and a colored accent matching its status. Columns have a fixed-height "+ Add" slot so all columns stay the same size; the button only appears in **Wishlist, Applied, and Interview**.
+
+### Restricted drag-and-drop
+
+Card movement is strictly limited to a transition map:
+
+| From | Allowed targets |
+|---|---|
+| Wishlist | Applied only |
+| Applied | Follow-up, Interview, Rejected |
+| Follow-up | Interview, Rejected |
+| Interview | Follow-up, Offer Accepted, Offer Declined, Rejected |
+| Offer Accepted / Offer Declined / Rejected | locked (cannot be dragged) |
+
+During a drag, legal target columns highlight blue, the source stays normal, and illegal targets dim.
+
+### Core features
+
+- **Drag-and-drop** with `@dnd-kit/core` — persists the new status to IndexedDB immediately.
+- **Add/Edit modal** — all fields (company, role, LinkedIn URL, resume/cover letter, salary, dates, status, tags, contact/recruiter, JD snapshot, notes), grouped into sections.
+- **Interview round tracker** — rounds are only enterable while a card is in **Interview**; free-text stages with date, notes, and a "Done" checkbox.
+- **Search & tag filter** — live substring match on company/role plus multi-tag filtering.
+- **Follow-up reminders** — overdue badge on cards + a "N need follow-up" count in the header.
+- **Archive (soft delete)** — archive a card, then restore or permanently delete from the Archive tab.
+- **Calendar view** — monthly view plotting follow-up dates and interview rounds; clicking an event opens the card.
+- **Analytics view** — applications this week/month, response rate, rejection rate (company + self-declined), average days to outcome.
+- **Import/Export JSON** — dump all records to a `.json` file and re-import with shape validation.
+- **Dark/light mode** — Tailwind `dark:` classes with a smooth theme transition, stored in `localStorage`.
+
+### Tech stack
+
+| Dependency | Version |
+|---|---|
+| `react` / `react-dom` | ^18.3.1 |
+| `vite` | ^6.4.3 |
+| `tailwindcss` | ^3.4.19 |
+| `idb` | ^8.0.0 |
+| `@dnd-kit/core` / `sortable` / `utilities` | ^6.1.0 / ^8.0.0 / ^3.2.2 |
+
+### Setup & Run
+
+```bash
+cd chapter_05_Job_Tracker_AI_Application
+npm install
+npm run dev          # start the dev server (http://localhost:5173)
+npm run build        # production build
+```
+
+> **Note:** If `npm install` doesn't pull dev dependencies, run `npm install --save-dev vite @vitejs/plugin-react tailwindcss postcss autoprefixer` — a global `npm config set omit=dev` can suppress them.
 
 ## Prompt Templates Library
 
