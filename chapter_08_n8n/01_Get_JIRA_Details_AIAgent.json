@@ -1,0 +1,193 @@
+{
+  "name": "01_Get_JIRA_Details_AIAgent",
+  "nodes": [
+    {
+      "parameters": {
+        "content": "## Trigger",
+        "height": 464,
+        "width": 336
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        -624,
+        -192
+      ],
+      "typeVersion": 1,
+      "id": "1449daed-81ea-4a12-91f6-43880f4b51ee",
+      "name": "Sticky Note"
+    },
+    {
+      "parameters": {
+        "content": "## Action",
+        "height": 464,
+        "width": 496,
+        "color": 4
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        -224,
+        -192
+      ],
+      "typeVersion": 1,
+      "id": "3133f013-5d88-4c71-bd5d-eaef5872e8eb",
+      "name": "Sticky Note1"
+    },
+    {
+      "parameters": {
+        "content": "## Result",
+        "height": 464,
+        "width": 384,
+        "color": 5
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        336,
+        -192
+      ],
+      "typeVersion": 1,
+      "id": "26db9a35-ab15-430f-8a6c-260ff0af29fb",
+      "name": "Sticky Note2"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.chatTrigger",
+      "typeVersion": 1.4,
+      "position": [
+        -512,
+        -32
+      ],
+      "id": "2c296cae-71bd-4bd4-9473-d7a3124aa912",
+      "name": "When chat message received",
+      "webhookId": "0492d9be-14b2-453f-a938-d3f50bc74ea2"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 3.1,
+      "position": [
+        -48,
+        -96
+      ],
+      "id": "d9381f70-7f43-4702-9a09-d10b8e788423",
+      "name": "AI Agent"
+    },
+    {
+      "parameters": {
+        "model": "qwen/qwen3.8-27b",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGroq",
+      "typeVersion": 1,
+      "position": [
+        -176,
+        128
+      ],
+      "id": "bffcd9b1-61b8-4f71-900d-2a3e4cff23f9",
+      "name": "Groq Chat Model",
+      "credentials": {
+        "groqApi": {
+          "id": "AP4XcC4hxoTYPfWx",
+          "name": "Groq account"
+        }
+      }
+    },
+    {
+      "parameters": {},
+      "type": "@n8n/n8n-nodes-langchain.memoryBufferWindow",
+      "typeVersion": 1.4,
+      "position": [
+        -32,
+        80
+      ],
+      "id": "edbcae47-d73c-40c4-b64c-58cbf6d7a200",
+      "name": "Simple Memory"
+    },
+    {
+      "parameters": {
+        "operation": "get",
+        "issueKey": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('Issue_Key', ``, 'string') }}",
+        "additionalFields": {}
+      },
+      "type": "n8n-nodes-base.jiraTool",
+      "typeVersion": 1,
+      "position": [
+        144,
+        112
+      ],
+      "id": "c9c6f1e3-c755-488e-8cb0-a85d0c23c742",
+      "name": "Get an issue in Jira Software",
+      "notesInFlow": true,
+      "credentials": {
+        "jiraSoftwareCloudApi": {
+          "id": "hW9xLGVYZrAQzTJN",
+          "name": "Jira SW Cloud account"
+        }
+      },
+      "notes": "Fetch JIRA Ticket"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "When chat message received": {
+      "main": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Groq Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Simple Memory": {
+      "ai_memory": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_memory",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get an issue in Jira Software": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate"
+  },
+  "versionId": "7a27e4c0-85af-4d56-8934-577785afde94",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "7a9b8bf06b264c60a3277661724dff362e6b8230031ba3d22faa2e10f7473c76"
+  },
+  "nodeGroups": [],
+  "id": "69OHL6M5q618V3jK",
+  "tags": []
+}

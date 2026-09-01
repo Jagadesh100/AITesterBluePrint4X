@@ -1,0 +1,253 @@
+{
+  "name": "02_Create_Test_Plan_From_JIRA_Requirement_AIAgent",
+  "nodes": [
+    {
+      "parameters": {
+        "content": "## Trigger",
+        "height": 464,
+        "width": 336
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        -624,
+        -192
+      ],
+      "typeVersion": 1,
+      "id": "9aa024f0-6062-4526-a706-5466eb4e2361",
+      "name": "Sticky Note"
+    },
+    {
+      "parameters": {
+        "content": "## Action",
+        "height": 464,
+        "width": 624,
+        "color": 4
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        -224,
+        -192
+      ],
+      "typeVersion": 1,
+      "id": "eb1522e0-03dc-4297-bc20-64cf5ad777ca",
+      "name": "Sticky Note1"
+    },
+    {
+      "parameters": {
+        "content": "## Result",
+        "height": 464,
+        "width": 384,
+        "color": 5
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        432,
+        -192
+      ],
+      "typeVersion": 1,
+      "id": "9d30e923-572c-44f4-80e4-e41461ef0817",
+      "name": "Sticky Note2"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.chatTrigger",
+      "typeVersion": 1.4,
+      "position": [
+        -512,
+        -32
+      ],
+      "id": "299350a3-e9bc-499a-afc3-cc2db2b0838c",
+      "name": "When chat message received",
+      "webhookId": "9fe895dc-754f-4b3f-a57d-5decb0ef9320"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 3.1,
+      "position": [
+        -16,
+        -144
+      ],
+      "id": "463cd6f0-1fb4-4646-a328-7143f990f0b5",
+      "name": "AI Agent"
+    },
+    {
+      "parameters": {
+        "model": "openai/gpt-oss-120b",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGroq",
+      "typeVersion": 1,
+      "position": [
+        -176,
+        16
+      ],
+      "id": "a7d3a0fa-0988-4569-982c-f6a6a2e7d023",
+      "name": "Groq Chat Model",
+      "credentials": {
+        "groqApi": {
+          "id": "AP4XcC4hxoTYPfWx",
+          "name": "Groq account"
+        }
+      }
+    },
+    {
+      "parameters": {},
+      "type": "@n8n/n8n-nodes-langchain.memoryBufferWindow",
+      "typeVersion": 1.4,
+      "position": [
+        -16,
+        64
+      ],
+      "id": "e607792c-c692-4346-9c74-77b6cedeb92e",
+      "name": "Simple Memory"
+    },
+    {
+      "parameters": {
+        "project": {
+          "__rl": true,
+          "value": "10000",
+          "mode": "list",
+          "cachedResultName": "QA Testing"
+        },
+        "issueType": {
+          "__rl": true,
+          "value": "10004",
+          "mode": "list",
+          "cachedResultName": "Story"
+        },
+        "summary": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('Summary', ``, 'string') }}",
+        "additionalFields": {
+          "description": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('Description', ``, 'string') }}",
+          "priority": {
+            "mode": "list",
+            "value": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('Priority', ``, 'string') }}"
+          },
+          "reporter": {
+            "__rl": true,
+            "value": "712020:7a129682-dfdd-45bf-86d9-b818e7048345",
+            "mode": "list",
+            "cachedResultName": "Jagadesh Thirumal"
+          }
+        }
+      },
+      "type": "n8n-nodes-base.jiraTool",
+      "typeVersion": 1,
+      "position": [
+        272,
+        16
+      ],
+      "id": "10c52bd3-5c91-462b-bd2f-4ec870735b81",
+      "name": "Create an issue in Jira Software",
+      "notesInFlow": true,
+      "credentials": {
+        "jiraSoftwareCloudApi": {
+          "id": "hW9xLGVYZrAQzTJN",
+          "name": "Jira SW Cloud account"
+        }
+      },
+      "notes": "Fetch JIRA Ticket"
+    },
+    {
+      "parameters": {
+        "operation": "get",
+        "issueKey": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('Issue_Key', ``, 'string') }}",
+        "additionalFields": {}
+      },
+      "type": "n8n-nodes-base.jiraTool",
+      "typeVersion": 1,
+      "position": [
+        128,
+        128
+      ],
+      "id": "2930bdd0-3d54-4899-9823-ac0550ac97ec",
+      "name": "Get an issue in Jira Software",
+      "credentials": {
+        "jiraSoftwareCloudApi": {
+          "id": "hW9xLGVYZrAQzTJN",
+          "name": "Jira SW Cloud account"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "When chat message received": {
+      "main": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Groq Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Simple Memory": {
+      "ai_memory": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_memory",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Create an issue in Jira Software": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get an issue in Jira Software": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AI Agent": {
+      "main": [
+        []
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate"
+  },
+  "versionId": "680727aa-d496-46dc-b9f4-cded01188878",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "7a9b8bf06b264c60a3277661724dff362e6b8230031ba3d22faa2e10f7473c76"
+  },
+  "nodeGroups": [],
+  "id": "g6p6bAm1zzxoXg7B",
+  "tags": []
+}
